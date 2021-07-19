@@ -1,0 +1,30 @@
+version: "3.7"
+services:
+  app:
+    build: ./.docker/php
+    volumes:
+      - ./contents:/home/test/contents
+
+  web:
+    build: ./.docker/nginx
+    ports:
+      - 8080:80
+    volumes:
+      - ./contents:/home/test/contents
+      - ./.docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+
+  mysql:
+    build: ./.docker/mysql
+    ports:
+      - 13306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db
+      MYSQL_USER: test
+      MYSQL_PASSWORD: test
+    volumes:
+      - db-store:/var/lib/mysql
+      - ./.docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+
+volumes:
+  db-store:
